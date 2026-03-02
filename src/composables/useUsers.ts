@@ -6,7 +6,6 @@ import { useAuthStore } from '@/stores/auth'
 export interface ChatUser {
   uid: string
   displayName: string
-  email: string
   createdAt: number
 }
 

@@ -73,7 +73,7 @@ const hasUnread = computed(() => (props.unreadCount ?? 0) > 0)
             {{ unreadCount! > 99 ? '99+' : unreadCount }}
           </span>
         </p>
-        <p class="truncate text-xs text-muted-foreground">{{ user.email }}</p>
+        <p class="truncate text-xs text-muted-foreground">{{ lastSeenText }}</p>
       </div>
     </div>
   </button>

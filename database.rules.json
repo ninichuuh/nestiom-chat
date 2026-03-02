@@ -6,10 +6,10 @@
       ".read": "auth != null",
       "$uid": {
         ".write": "auth != null && auth.uid === $uid",
-        ".validate": "newData.hasChildren(['displayName', 'email', 'createdAt'])",
+        ".validate": "newData.hasChildren(['displayName', 'createdAt'])",
         "displayName": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 50" },
-        "email": { ".validate": "newData.isString() && newData.val().contains('@')" },
-        "createdAt": { ".validate": "newData.isNumber()" }
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
       }
     },
     "messages": {
@@ -29,7 +29,8 @@
           "fileUrl": { ".validate": "newData.isString()" },
           "fileName": { ".validate": "newData.isString()" },
           "fileType": { ".validate": "newData.isString()" },
-          "fileSize": { ".validate": "newData.isNumber() && newData.val() <= 10485760" }
+          "fileSize": { ".validate": "newData.isNumber() && newData.val() <= 10485760" },
+          "$other": { ".validate": false }
         }
       }
     },
@@ -39,7 +40,8 @@
         ".write": "auth != null && auth.uid === $uid",
         ".validate": "newData.hasChildren(['online', 'lastSeen'])",
         "online": { ".validate": "newData.isBoolean()" },
-        "lastSeen": { ".validate": "newData.isNumber()" }
+        "lastSeen": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
       }
     },
     "typing": {
@@ -71,7 +73,8 @@
           ".write": "auth != null && auth.uid === $uid && $conversationId.contains(auth.uid)",
           ".validate": "newData.hasChildren(['lastReadMessageId', 'lastReadTimestamp'])",
           "lastReadMessageId": { ".validate": "newData.isString()" },
-          "lastReadTimestamp": { ".validate": "newData.isNumber()" }
+          "lastReadTimestamp": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
         }
       }
     },

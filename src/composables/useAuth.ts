@@ -24,7 +24,6 @@ export function useAuth() {
       const { user } = await createUserWithEmailAndPassword(auth, email, password)
       await set(dbRef(db, `users/${user.uid}`), {
         displayName,
-        email,
         createdAt: serverTimestamp(),
       })
     } catch (e: unknown) {
