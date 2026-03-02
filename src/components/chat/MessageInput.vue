@@ -74,10 +74,8 @@ function cancelFile() {
         <span>Uploading... {{ Math.round(uploadProgress ?? 0) }}%</span>
       </div>
       <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-        <div
-          class="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all"
-          :style="{ width: `${uploadProgress ?? 0}%` }"
-        />
+        <div class="h-full rounded-full bg-linear-to-r from-primary to-primary/70 transition-all"
+          :style="{ width: `${uploadProgress ?? 0}%` }" />
       </div>
     </div>
 
@@ -91,32 +89,17 @@ function cancelFile() {
     </div>
 
     <div class="flex items-center gap-2 p-4">
-      <input
-        ref="fileInput"
-        type="file"
-        accept="image/*,application/pdf,text/*"
-        class="hidden"
-        @change="handleFileSelect"
-      />
-      <Button variant="ghost" size="icon" class="min-h-11 min-w-11 md:min-h-0 md:min-w-0" aria-label="Attach file" :disabled="uploading" @click="fileInput?.click()">
+      <input ref="fileInput" type="file" accept="image/*,application/pdf,text/*" class="hidden"
+        @change="handleFileSelect" />
+      <Button variant="ghost" size="icon" class="min-h-11 min-w-11 md:min-h-0 md:min-w-0" aria-label="Attach file"
+        :disabled="uploading" @click="fileInput?.click()">
         <Paperclip class="h-4 w-4" />
       </Button>
-      <Input
-        v-model="text"
-        :placeholder="pendingFile ? 'Add a caption...' : 'Type a message...'"
-        class="glow-ring flex-1"
-        maxlength="2000"
-        :disabled="uploading"
-        @keydown.enter.prevent="handleSend"
-        @input="handleInput"
-      />
-      <Button
-        size="icon"
-        class="min-h-11 min-w-11 transition-transform hover:scale-105 md:min-h-0 md:min-w-0"
-        aria-label="Send message"
-        :disabled="(!text.trim() && !pendingFile) || uploading"
-        @click="handleSend"
-      >
+      <Input v-model="text" :placeholder="pendingFile ? 'Add a caption...' : 'Type a message...'"
+        class="glow-ring flex-1" maxlength="2000" :disabled="uploading" @keydown.enter.prevent="handleSend"
+        @input="handleInput" />
+      <Button size="icon" class="min-h-11 min-w-11 transition-transform hover:scale-105 md:min-h-0 md:min-w-0"
+        aria-label="Send message" :disabled="(!text.trim() && !pendingFile) || uploading" @click="handleSend">
         <SendHorizonal class="h-4 w-4" />
       </Button>
     </div>
