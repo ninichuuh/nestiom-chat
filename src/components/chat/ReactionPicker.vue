@@ -28,7 +28,7 @@ function handleSelect(emoji: ReactionKey) {
       <button
         v-for="r in REACTION_EMOJIS"
         :key="r.key"
-        class="rounded p-1 text-base transition-transform hover:scale-125 hover:bg-accent"
+        class="rounded p-1 text-base transition-all hover:scale-125 hover:bg-accent active:scale-95"
         @click="handleSelect(r.key)"
       >
         {{ r.emoji }}

@@ -24,11 +24,23 @@ defineEmits<{
 
 const scrollContainer = ref<InstanceType<typeof ScrollArea> | null>(null)
 
+// Auto-scroll to bottom on new messages
 watch(() => props.messages.length, async () => {
   await nextTick()
   const el = scrollContainer.value?.$el?.querySelector('[data-radix-scroll-area-viewport]')
   if (el) {
     el.scrollTop = el.scrollHeight
+  }
+})
+
+// Scroll to highlighted message (search results)
+watch(() => props.highlightedMessageId, async (id) => {
+  if (!id) return
+  await nextTick()
+  const viewport = scrollContainer.value?.$el?.querySelector('[data-radix-scroll-area-viewport]')
+  const target = viewport?.querySelector(`[data-message-id="${id}"]`) as HTMLElement | null
+  if (target && viewport) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 })
 </script>
@@ -49,6 +61,7 @@ watch(() => props.messages.length, async () => {
           <MessageBubble
             v-for="msg in messages"
             :key="msg.id"
+            :data-message-id="msg.id"
             :message="msg"
             :is-mine="msg.senderId === currentUid"
             :reactions="getReactions?.(msg.id)"

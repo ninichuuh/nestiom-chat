@@ -24,6 +24,12 @@ const hasData = computed(() => props.counts.some(c => c > 0))
     preserveAspectRatio="none"
     viewBox="0 0 24 10"
   >
+    <defs>
+      <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="currentColor" stop-opacity="0.05" />
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0.2" />
+      </linearGradient>
+    </defs>
     <rect
       v-for="(bar, i) in bars"
       :key="i"
@@ -32,7 +38,8 @@ const hasData = computed(() => props.counts.some(c => c > 0))
       width="0.8"
       :height="bar.height / 10"
       rx="0.2"
-      class="fill-primary/10"
+      class="text-primary"
+      fill="url(#barGrad)"
     />
   </svg>
 </template>

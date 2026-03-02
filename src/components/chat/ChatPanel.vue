@@ -105,12 +105,12 @@ async function handleFile(file: File) {
     <!-- Active conversation -->
     <template v-else>
       <!-- Chat header -->
-      <div class="flex items-center gap-3 border-b px-4 py-3">
+      <div class="flex items-center gap-3 border-b px-4 py-3 shadow-[0_1px_4px_rgb(0_0_0/0.04)] dark:shadow-[0_1px_4px_rgb(0_0_0/0.15)]">
         <div class="relative">
           <Avatar :name="selectedUser.displayName" size="sm" />
           <span
             class="absolute bottom-0 right-0 h-2 w-2 rounded-full border-2 border-background"
-            :class="otherOnline ? 'bg-green-500' : 'bg-muted-foreground/40'"
+            :class="otherOnline ? 'bg-green-500 animate-pulse-dot' : 'bg-muted-foreground/40'"
           />
         </div>
         <div class="flex-1">
@@ -123,15 +123,17 @@ async function handleFile(file: File) {
       </div>
 
       <!-- Search panel -->
-      <MessageSearch
-        v-if="isSearchOpen"
-        :result-count="searchResults.length"
-        :current-index="currentResultIndex"
-        @search="(q) => searchQuery = q"
-        @next="nextResult"
-        @prev="prevResult"
-        @close="closeSearch"
-      />
+      <Transition name="search">
+        <MessageSearch
+          v-if="isSearchOpen"
+          :result-count="searchResults.length"
+          :current-index="currentResultIndex"
+          @search="(q) => searchQuery = q"
+          @next="nextResult"
+          @prev="prevResult"
+          @close="closeSearch"
+        />
+      </Transition>
 
       <!-- Message chart -->
       <MessageChart :stats="hourlyStats" :total-messages="totalMessages" />

@@ -64,7 +64,7 @@ async function handleLogout() {
     <!-- Sidebar -->
     <aside
       aria-label="User list"
-      class="flex w-full flex-col border-r bg-sidebar-background md:w-80"
+      class="flex w-full flex-col border-r bg-sidebar-background shadow-[2px_0_12px_rgb(0_0_0/0.04)] md:w-80 dark:shadow-[2px_0_12px_rgb(0_0_0/0.15)]"
       :class="{ 'hidden md:flex': !showSidebar }"
     >
       <!-- Sidebar header -->

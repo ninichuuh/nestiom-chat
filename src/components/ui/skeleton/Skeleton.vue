@@ -8,5 +8,5 @@ defineProps<{
 </script>
 
 <template>
-  <div :class="cn('animate-pulse rounded-md bg-muted', $props.class)" />
+  <div :class="cn('rounded-md bg-muted animate-shimmer', $props.class)" />
 </template>

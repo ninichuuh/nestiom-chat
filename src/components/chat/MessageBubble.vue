@@ -88,7 +88,7 @@ function cancelEdit() {
 
     <div class="max-w-[70%]">
       <div
-        class="rounded-2xl px-4 py-2 text-sm transition-shadow"
+        class="rounded-2xl px-4 py-2 text-sm shadow-sm transition-all hover:shadow-md hover:scale-[1.01] dark:shadow-black/10"
         :class="[
           isMine
             ? 'bg-primary text-primary-foreground rounded-br-md'
@@ -141,11 +141,11 @@ function cancelEdit() {
             :file-size="message.fileSize ?? 0"
           />
           <p
-            class="mt-1 text-[10px] opacity-70"
+            class="mt-1 text-[10px] opacity-60"
             :class="isMine ? 'text-right' : 'text-left'"
           >
             {{ formattedTime }}
-            <span v-if="message.edited" class="ml-1">(edited)</span>
+            <span v-if="message.edited" class="ml-1 italic">(edited)</span>
             <MessageStatus v-if="isMine && messageStatus" :status="messageStatus" />
           </p>
         </template>
