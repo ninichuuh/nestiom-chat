@@ -8,8 +8,7 @@
         ".write": "auth != null && auth.uid === $uid",
         ".validate": "newData.hasChildren(['displayName', 'createdAt'])",
         "displayName": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 50" },
-        "createdAt": { ".validate": "newData.isNumber()" },
-        "$other": { ".validate": false }
+        "createdAt": { ".validate": "newData.isNumber()" }
       }
     },
     "messages": {
