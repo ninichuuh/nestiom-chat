@@ -9,6 +9,7 @@ import {
 import { ref as dbRef, set, serverTimestamp } from 'firebase/database'
 import { auth, db } from '@/firebase'
 import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
 
 let authListenerInitialized = false
 
@@ -68,9 +69,16 @@ export function useAuth() {
     authListenerInitialized = true
 
     const store = useAuthStore()
+    let initialLoad = true
     onAuthStateChanged(auth, (user: User | null) => {
       store.setUser(user)
       store.setLoading(false)
+
+      // Redirect to login if session expires after initial load
+      if (!initialLoad && !user) {
+        router.push({ name: 'login' })
+      }
+      initialLoad = false
     })
   }
 
