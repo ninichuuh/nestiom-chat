@@ -1,0 +1,2 @@
+# nestiom-chat
+ZADATAK ZA RAZGOVOR ZA POSAO
