@@ -41,6 +41,7 @@ function handleInput() {
       v-model="text"
       placeholder="Type a message..."
       class="flex-1"
+      maxlength="2000"
       @keydown.enter.prevent="handleSend"
       @input="handleInput"
     />

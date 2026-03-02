@@ -6,7 +6,7 @@
         ".write": "auth != null && auth.uid === $uid",
         ".validate": "newData.hasChildren(['displayName', 'email', 'createdAt'])",
         "displayName": { ".validate": "newData.isString() && newData.val().length > 0" },
-        "email": { ".validate": "newData.isString()" },
+        "email": { ".validate": "newData.isString() && newData.val().contains('@')" },
         "createdAt": { ".validate": "newData.isNumber()" }
       }
     },
@@ -18,7 +18,7 @@
         "$messageId": {
           ".validate": "newData.hasChildren(['senderId', 'text', 'timestamp'])",
           "senderId": { ".validate": "newData.val() === auth.uid" },
-          "text": { ".validate": "newData.isString() && newData.val().length > 0" },
+          "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000" },
           "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
         }
       }
