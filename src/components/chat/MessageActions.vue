@@ -21,7 +21,7 @@ defineEmits<{
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="ghost" size="icon" class="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
+      <Button variant="ghost" size="icon" class="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent/80">
         <MoreVertical class="h-3 w-3" />
       </Button>
     </DropdownMenuTrigger>

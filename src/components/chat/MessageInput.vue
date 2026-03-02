@@ -73,8 +73,11 @@ function cancelFile() {
         <Loader2 class="h-3 w-3 animate-spin" />
         <span>Uploading... {{ Math.round(uploadProgress ?? 0) }}%</span>
       </div>
-      <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-muted">
-        <div class="h-full bg-primary transition-all" :style="{ width: `${uploadProgress ?? 0}%` }" />
+      <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          class="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all"
+          :style="{ width: `${uploadProgress ?? 0}%` }"
+        />
       </div>
     </div>
 
@@ -101,13 +104,19 @@ function cancelFile() {
       <Input
         v-model="text"
         :placeholder="pendingFile ? 'Add a caption...' : 'Type a message...'"
-        class="flex-1"
+        class="glow-ring flex-1"
         maxlength="2000"
         :disabled="uploading"
         @keydown.enter.prevent="handleSend"
         @input="handleInput"
       />
-      <Button size="icon" class="min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0" aria-label="Send message" :disabled="(!text.trim() && !pendingFile) || uploading" @click="handleSend">
+      <Button
+        size="icon"
+        class="min-h-[44px] min-w-[44px] transition-transform hover:scale-105 md:min-h-0 md:min-w-0"
+        aria-label="Send message"
+        :disabled="(!text.trim() && !pendingFile) || uploading"
+        @click="handleSend"
+      >
         <SendHorizonal class="h-4 w-4" />
       </Button>
     </div>
