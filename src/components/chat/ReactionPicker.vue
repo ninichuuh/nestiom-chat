@@ -20,7 +20,7 @@ function handleSelect(emoji: ReactionKey) {
 <template>
   <Popover v-model:open="open">
     <PopoverTrigger as-child>
-      <Button variant="ghost" size="icon" class="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
+      <Button variant="ghost" size="icon" class="h-6 w-6 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
         <SmilePlus class="h-3 w-3" />
       </Button>
     </PopoverTrigger>
