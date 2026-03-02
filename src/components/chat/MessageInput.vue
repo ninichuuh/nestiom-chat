@@ -98,7 +98,7 @@ function cancelFile() {
         class="hidden"
         @change="handleFileSelect"
       />
-      <Button variant="ghost" size="icon" class="min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0" aria-label="Attach file" :disabled="uploading" @click="fileInput?.click()">
+      <Button variant="ghost" size="icon" class="min-h-11 min-w-11 md:min-h-0 md:min-w-0" aria-label="Attach file" :disabled="uploading" @click="fileInput?.click()">
         <Paperclip class="h-4 w-4" />
       </Button>
       <Input
@@ -112,7 +112,7 @@ function cancelFile() {
       />
       <Button
         size="icon"
-        class="min-h-[44px] min-w-[44px] transition-transform hover:scale-105 md:min-h-0 md:min-w-0"
+        class="min-h-11 min-w-11 transition-transform hover:scale-105 md:min-h-0 md:min-w-0"
         aria-label="Send message"
         :disabled="(!text.trim() && !pendingFile) || uploading"
         @click="handleSend"

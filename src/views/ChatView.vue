@@ -97,11 +97,11 @@ async function handleLogout() {
     <main
       ref="chatPanelRef"
       class="hidden flex-1 flex-col md:flex"
-      :class="{ '!flex': selectedUser && !sidebarOpen }"
+      :class="{ 'flex!': selectedUser && !sidebarOpen }"
     >
       <!-- Mobile back button -->
       <div v-if="selectedUser" class="flex items-center gap-2 border-b px-2 py-2 md:hidden">
-        <Button variant="ghost" size="icon" class="min-h-[44px] min-w-[44px]" aria-label="Back to user list" @click="handleBack">
+        <Button variant="ghost" size="icon" class="min-h-11 min-w-11" aria-label="Back to user list" @click="handleBack">
           <ArrowLeft class="h-5 w-5" />
         </Button>
         <span class="text-sm font-medium">Back</span>
