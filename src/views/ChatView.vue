@@ -60,7 +60,7 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="flex h-screen">
+  <div class="flex h-dvh">
     <!-- Sidebar -->
     <aside
       aria-label="User list"
