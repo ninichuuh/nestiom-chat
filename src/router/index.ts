@@ -28,17 +28,23 @@ const router = createRouter({
       component: () => import('@/views/ChatView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      redirect: '/',
+    },
   ],
 })
 
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
-  // Wait for Firebase auth to initialize before making routing decisions
   if (auth.isLoading) {
     await new Promise<void>((resolve) => {
+      const timeout = setTimeout(() => resolve(), 5000)
       const unwatch = auth.$subscribe(() => {
         if (!auth.isLoading) {
+          clearTimeout(timeout)
           unwatch()
           resolve()
         }

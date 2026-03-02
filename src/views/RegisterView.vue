@@ -22,7 +22,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-muted/40 px-4">
+  <main class="flex min-h-screen items-center justify-center bg-muted/40 px-4">
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl text-center">Create Account</CardTitle>
@@ -36,6 +36,7 @@ async function handleSubmit() {
               v-model="displayName"
               placeholder="Your name"
               required
+              maxlength="50"
               autocomplete="name"
             />
           </div>
@@ -62,7 +63,7 @@ async function handleSubmit() {
               autocomplete="new-password"
             />
           </div>
-          <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
+          <p v-if="error" role="alert" class="text-sm text-destructive">{{ error }}</p>
           <Button type="submit" class="w-full" :disabled="loading">
             {{ loading ? 'Creating account...' : 'Register' }}
           </Button>
@@ -75,5 +76,5 @@ async function handleSubmit() {
         </form>
       </CardContent>
     </Card>
-  </div>
+  </main>
 </template>

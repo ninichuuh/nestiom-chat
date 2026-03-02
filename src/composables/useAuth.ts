@@ -56,7 +56,11 @@ export function useAuth() {
 
   async function logout() {
     error.value = null
-    await signOut(auth)
+    try {
+      await signOut(auth)
+    } catch {
+      error.value = 'Sign out failed. Please try again.'
+    }
   }
 
   function initAuthListener() {

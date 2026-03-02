@@ -122,7 +122,7 @@ const techStack = [
 
           <h1 class="text-4xl font-bold tracking-tight md:text-6xl">
             Chat in<br />
-            <span class="text-muted-foreground/60">real time.</span>
+            <span class="text-muted-foreground">real time.</span>
           </h1>
 
           <p class="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -195,7 +195,7 @@ const techStack = [
         <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Features</p>
         <h2 class="text-2xl font-bold tracking-tight md:text-3xl">
           Everything you need<br />
-          <span class="text-muted-foreground/60">for real-time communication.</span>
+          <span class="text-muted-foreground">for real-time communication.</span>
         </h2>
       </div>
 
@@ -221,7 +221,7 @@ const techStack = [
         <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Built with</p>
         <h2 class="text-2xl font-bold tracking-tight md:text-3xl">
           Modern stack,<br />
-          <span class="text-muted-foreground/60">production patterns.</span>
+          <span class="text-muted-foreground">production patterns.</span>
         </h2>
       </div>
 

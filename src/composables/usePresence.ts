@@ -29,20 +29,16 @@ export function usePresence() {
     const userPresenceRef = dbRef(db, `presence/${uid}`)
     const connectedRef = dbRef(db, '.info/connected')
 
-    // Register onDisconnect once, outside the listener
-    onDisconnect(userPresenceRef).set({
-      online: false,
-      lastSeen: serverTimestamp(),
-    })
-
-    // Listen for connection state and set online when connected
     onValue(connectedRef, (snapshot) => {
       if (snapshot.val() === true) {
+        onDisconnect(userPresenceRef).set({
+          online: false,
+          lastSeen: serverTimestamp(),
+        })
         set(userPresenceRef, { online: true, lastSeen: serverTimestamp() })
       }
     })
 
-    // Listen to all users' presence
     const allPresenceRef = dbRef(db, 'presence')
     onValue(allPresenceRef, (snapshot) => {
       const data = snapshot.val()
