@@ -79,11 +79,7 @@ function cancelEdit() {
     <!-- Actions (before bubble for own messages) -->
     <template v-if="isMine && !editing">
       <ReactionPicker @select="(emoji) => emit('react', message.id, emoji)" />
-      <MessageActions
-        :deleted="message.deleted"
-        @edit="startEdit"
-        @delete="emit('delete', message.id)"
-      />
+      <MessageActions :deleted="message.deleted" @edit="startEdit" @delete="emit('delete', message.id)" />
     </template>
 
     <div class="max-w-[70%]">
@@ -95,8 +91,7 @@ function cancelEdit() {
             : 'bg-muted rounded-bl-md',
           message.deleted && 'opacity-60',
           highlighted && 'ring-2 ring-yellow-400',
-        ]"
-      >
+        ]">
         <!-- Deleted message -->
         <p v-if="message.deleted" class="italic">
           This message was deleted
@@ -104,14 +99,8 @@ function cancelEdit() {
 
         <!-- Editing mode -->
         <template v-else-if="editing">
-          <Input
-            ref="editInput"
-            v-model="editText"
-            class="mb-1 h-8 bg-background text-foreground"
-            maxlength="2000"
-            @keydown.enter.prevent="submitEdit"
-            @keydown.escape.prevent="cancelEdit"
-          />
+          <Input ref="editInput" v-model="editText" class="mb-1 h-8 bg-background text-foreground" maxlength="2000"
+            @keydown.enter.prevent="submitEdit" @keydown.escape.prevent="cancelEdit" />
           <p class="text-[10px] opacity-70">
             Enter to save, Escape to cancel
           </p>
@@ -119,31 +108,18 @@ function cancelEdit() {
 
         <!-- Normal message -->
         <template v-else>
-          <p class="break-words">
+          <p class="wrap-break-word">
             <template v-for="(seg, i) in segments" :key="i">
               <span v-if="seg.type === 'text' && highlightQuery" v-html="highlightText(seg.value)" />
               <span v-else-if="seg.type === 'text'">{{ seg.value }}</span>
-              <a
-                v-else
-                :href="seg.value"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="underline underline-offset-2 hover:opacity-80"
-              >{{ seg.value }}</a>
+              <a v-else :href="seg.value" target="_blank" rel="noopener noreferrer"
+                class="underline underline-offset-2 hover:opacity-80">{{ seg.value }}</a>
             </template>
           </p>
           <LinkCard v-if="hasStandaloneUrl" :url="segments[0]!.value" />
-          <FilePreview
-            v-if="message.fileUrl"
-            :file-url="message.fileUrl"
-            :file-name="message.fileName ?? 'File'"
-            :file-type="message.fileType ?? ''"
-            :file-size="message.fileSize ?? 0"
-          />
-          <p
-            class="mt-1 text-[10px] opacity-60"
-            :class="isMine ? 'text-right' : 'text-left'"
-          >
+          <FilePreview v-if="message.fileUrl" :file-url="message.fileUrl" :file-name="message.fileName ?? 'File'"
+            :file-type="message.fileType ?? ''" :file-size="message.fileSize ?? 0" />
+          <p class="mt-1 text-[10px] opacity-60" :class="isMine ? 'text-right' : 'text-left'">
             {{ formattedTime }}
             <span v-if="message.edited" class="ml-1 italic">(edited)</span>
             <MessageStatus v-if="isMine && messageStatus" :status="messageStatus" />
@@ -152,12 +128,8 @@ function cancelEdit() {
       </div>
 
       <!-- Reactions -->
-      <ReactionBar
-        v-if="reactions && currentUid"
-        :reactions="reactions"
-        :current-uid="currentUid"
-        @toggle="(emoji) => emit('react', message.id, emoji)"
-      />
+      <ReactionBar v-if="reactions && currentUid" :reactions="reactions" :current-uid="currentUid"
+        @toggle="(emoji) => emit('react', message.id, emoji)" />
     </div>
 
     <!-- Actions (after bubble for other's messages) -->

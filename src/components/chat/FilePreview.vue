@@ -22,22 +22,13 @@ const formattedSize = computed(() => {
   <div class="mt-1">
     <!-- Image preview -->
     <a v-if="isImage" :href="fileUrl" target="_blank" rel="noopener noreferrer" class="block">
-      <img
-        :src="fileUrl"
-        :alt="fileName"
-        class="max-w-[280px] rounded-lg object-cover transition-opacity hover:opacity-90"
-        loading="lazy"
-      />
+      <img :src="fileUrl" :alt="fileName" class="max-w-70 rounded-lg object-cover transition-opacity hover:opacity-90"
+        loading="lazy" />
     </a>
 
     <!-- File download card -->
-    <a
-      v-else
-      :href="fileUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center gap-2 rounded-lg border bg-card/50 p-2 transition-colors hover:bg-accent"
-    >
+    <a v-else :href="fileUrl" target="_blank" rel="noopener noreferrer"
+      class="flex items-center gap-2 rounded-lg border bg-card/50 p-2 transition-colors hover:bg-accent">
       <FileIcon class="h-8 w-8 shrink-0 text-muted-foreground" />
       <div class="min-w-0 flex-1">
         <p class="truncate text-xs font-medium">{{ fileName }}</p>
