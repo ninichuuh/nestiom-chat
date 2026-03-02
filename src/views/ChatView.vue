@@ -83,7 +83,7 @@ async function handleLogout() {
       <Separator />
 
       <!-- Sidebar footer -->
-      <div class="flex items-center justify-between px-4 py-3">
+      <div class="flex items-center justify-between p-4">
         <p class="truncate text-sm text-sidebar-foreground">
           {{ auth.currentUser?.email }}
         </p>

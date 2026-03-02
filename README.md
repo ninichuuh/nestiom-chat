@@ -1,54 +1,108 @@
-# nestiom-chat-scaffold
+# Nestiom Chat
 
-This template should help get you started developing with Vue 3 in Vite.
+Real-time chat web application built as a job interview task. Users can register, log in, and exchange private messages in real time with a rich set of features.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Real-time messaging** — instant delivery via Firebase Realtime Database
+- **User presence** — online/offline status with "last seen" timestamps
+- **Typing indicators** — see when the other person is typing
+- **Read receipts** — sent/read status on messages
+- **Unread counts** — badge next to user names for unread conversations
+- **Message reactions** — emoji reactions on any message
+- **Message editing & deletion** — edit or soft-delete your own messages
+- **File attachments** — share images, PDFs, and text files (up to 10 MB)
+- **Link previews** — automatic URL detection with preview cards
+- **Message search** — search within a conversation with scroll-to-result navigation
+- **24h message chart** — per-conversation bar chart showing messages exchanged over the last 24 hours (D3.js)
+- **Dark mode** — system-aware theme toggle
+- **Mobile responsive** — sidebar/chat panel layout with swipe-to-go-back gesture
+- **Browser notifications** — optional desktop notifications for new messages
 
-## Recommended Browser Setup
+## Tech Stack
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+| Layer | Technology |
+|---|---|
+| Framework | Vue 3.6 beta (Composition API + `<script setup>`) |
+| Build | Vite 8 beta |
+| State | Pinia 3 |
+| Routing | Vue Router 5 |
+| Backend | Firebase 12 (Auth, Realtime Database, Hosting) |
+| UI | shadcn-vue (Radix Vue + Tailwind CSS 4) |
+| Charts | D3.js 7 |
+| Language | TypeScript (strict mode) |
+| Linting | oxlint + ESLint |
+| Formatting | oxfmt |
+| Testing | Vitest + @vue/test-utils |
+| Package Manager | Bun |
 
-## Type Support for `.vue` Imports in TS
+## Getting Started
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### Prerequisites
 
-## Customize configuration
+- Node.js ^20.19.0 or >=22.12.0
+- [Bun](https://bun.sh/) package manager
+- A Firebase project with Auth and Realtime Database enabled
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### Setup
 
-## Project Setup
-
-```sh
+```bash
 bun install
 ```
 
-### Compile and Hot-Reload for Development
+Create or update `src/firebase.ts` with your Firebase project configuration.
 
-```sh
-bun dev
+### Development
+
+```bash
+bun run dev          # start dev server (localhost:5173)
 ```
 
-### Type-Check, Compile and Minify for Production
+### Build & Deploy
 
-```sh
-bun run build
+```bash
+bun run build        # type-check + production build
+bun run preview      # preview production build locally
+bunx firebase deploy # deploy to Firebase Hosting
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Testing & Linting
 
-```sh
-bun test:unit
+```bash
+bun run test:unit    # run unit tests
+bun run lint         # oxlint + eslint with auto-fix
+bun run format       # format src/ with oxfmt
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## Project Structure
 
-```sh
-bun lint
 ```
+src/
+├── assets/          # Global CSS (Tailwind, animations)
+├── components/
+│   ├── chat/        # ChatPanel, MessageList, MessageBubble, MessageInput, etc.
+│   ├── charts/      # MessageChart (D3.js), SparkBars
+│   ├── ui/          # shadcn-vue primitives (Button, Input, Avatar, etc.)
+│   └── users/       # UserList, UserListItem
+├── composables/     # Firebase logic (useMessages, useAuth, usePresence, etc.)
+├── lib/             # Utilities (linkify, utils)
+├── router/          # Vue Router config with auth guards
+├── stores/          # Pinia stores (auth, chat)
+└── views/           # LandingView, LoginView, RegisterView, ChatView, NotFoundView
+```
+
+## Security
+
+- Firebase security rules enforce per-user read/write access on all data paths
+- Messages limited to 2,000 characters; files limited to 10 MB
+- Hosting configured with `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and restrictive `Permissions-Policy`
+- Email validation enforced in security rules
+
+## Architecture
+
+The app follows a clean separation between UI components and Firebase logic:
+
+- **Composables** (`src/composables/`) encapsulate all Firebase interactions — auth, messaging, presence, typing, reactions, read receipts, file uploads, notifications, and search
+- **Pinia stores** manage auth state and derived chat state
+- **Components** are purely presentational, receiving data via props and emitting events
+- **Security rules** (`database.rules.json`) enforce message privacy at the database level — users can only access their own conversations
