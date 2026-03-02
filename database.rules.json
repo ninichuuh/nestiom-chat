@@ -81,6 +81,7 @@
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
         "$conversationId": {
+          ".read": "auth != null && $conversationId.contains(auth.uid)",
           ".write": "auth != null && $conversationId.contains(auth.uid)",
           ".validate": "newData.isNumber() && newData.val() >= 0"
         }
