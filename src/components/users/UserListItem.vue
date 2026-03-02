@@ -64,17 +64,17 @@ const hasUnread = computed(() => (props.unreadCount ?? 0) > 0)
         />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="flex items-center gap-1.5 truncate text-sm" :class="hasUnread ? 'font-semibold' : 'font-medium'">
+        <p class="truncate text-sm" :class="hasUnread ? 'font-semibold' : 'font-medium'">
           {{ user.displayName }}
-          <span
-            v-if="hasUnread"
-            class="inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground"
-          >
-            {{ unreadCount! > 99 ? '99+' : unreadCount }}
-          </span>
         </p>
         <p class="truncate text-xs text-muted-foreground">{{ lastSeenText }}</p>
       </div>
+      <span
+        v-if="hasUnread"
+        class="z-10 inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold leading-none text-primary-foreground"
+      >
+        {{ unreadCount! > 99 ? '99+' : unreadCount }}
+      </span>
     </div>
   </button>
 </template>
