@@ -20,9 +20,16 @@
         "$messageId": {
           ".write": "auth != null && $conversationId.contains(auth.uid) && (!data.exists() || data.child('senderId').val() === auth.uid)",
           ".validate": "newData.hasChildren(['senderId', 'text', 'timestamp'])",
-          "senderId": { ".validate": "newData.val() === auth.uid" },
-          "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000" },
-          "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
+          "senderId": { ".validate": "newData.val() === auth.uid || (data.exists() && newData.val() === data.child('senderId').val())" },
+          "text": { ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val().length > 0 || newData.parent().child('deleted').val() === true)" },
+          "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" },
+          "edited": { ".validate": "newData.isBoolean()" },
+          "editedAt": { ".validate": "newData.isNumber()" },
+          "deleted": { ".validate": "newData.isBoolean()" },
+          "fileUrl": { ".validate": "newData.isString()" },
+          "fileName": { ".validate": "newData.isString()" },
+          "fileType": { ".validate": "newData.isString()" },
+          "fileSize": { ".validate": "newData.isNumber() && newData.val() <= 10485760" }
         }
       }
     },
@@ -41,6 +48,39 @@
         "$uid": {
           ".write": "auth != null && auth.uid === $uid && $conversationId.contains(auth.uid)",
           ".validate": "newData.isBoolean()"
+        }
+      }
+    },
+    "reactions": {
+      "$conversationId": {
+        ".read": "auth != null && $conversationId.contains(auth.uid)",
+        "$messageId": {
+          "$emoji": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && $conversationId.contains(auth.uid)",
+              ".validate": "newData.isBoolean() && newData.val() === true"
+            }
+          }
+        }
+      }
+    },
+    "readReceipts": {
+      "$conversationId": {
+        ".read": "auth != null && $conversationId.contains(auth.uid)",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && $conversationId.contains(auth.uid)",
+          ".validate": "newData.hasChildren(['lastReadMessageId', 'lastReadTimestamp'])",
+          "lastReadMessageId": { ".validate": "newData.isString()" },
+          "lastReadTimestamp": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "unreadCounts": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$conversationId": {
+          ".write": "auth != null && $conversationId.contains(auth.uid)",
+          ".validate": "newData.isNumber() && newData.val() >= 0"
         }
       }
     }

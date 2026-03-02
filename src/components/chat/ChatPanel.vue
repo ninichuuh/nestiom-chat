@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue'
+import { computed, toRef, watch } from 'vue'
 import type { ChatUser } from '@/composables/useUsers'
 import { useMessages, getConversationId } from '@/composables/useMessages'
 import { useMessageStats } from '@/composables/useMessageStats'
 import { useTyping } from '@/composables/useTyping'
 import { useAuthStore } from '@/stores/auth'
 import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Search } from 'lucide-vue-next'
 import { usePresence } from '@/composables/usePresence'
+import { useReactions } from '@/composables/useReactions'
+import { useReadReceipts } from '@/composables/useReadReceipts'
+import { useUnreadCounts } from '@/composables/useUnreadCounts'
+import { useFileUpload } from '@/composables/useFileUpload'
+import { useNotifications } from '@/composables/useNotifications'
+import { useMessageSearch } from '@/composables/useMessageSearch'
 import MessageList from './MessageList.vue'
 import MessageInput from './MessageInput.vue'
+import MessageSearch from './MessageSearch.vue'
 import MessageChart from '@/components/charts/MessageChart.vue'
 
 const props = defineProps<{
@@ -19,7 +28,8 @@ const auth = useAuthStore()
 const { isOnline } = usePresence()
 
 const otherUid = computed(() => props.selectedUser?.uid ?? null)
-const { messages, loading, sendMessage } = useMessages(toRef(otherUid))
+const { messages, loading, sendMessage, sendFileMessage, editMessage, deleteMessage } = useMessages(toRef(otherUid))
+const { uploading, progress: uploadProgress, uploadFile } = useFileUpload()
 const { hourlyStats, totalMessages } = useMessageStats(messages)
 
 const currentConversationId = computed(() => {
@@ -28,6 +38,38 @@ const currentConversationId = computed(() => {
 })
 
 const { isOtherUserTyping, setTyping } = useTyping(currentConversationId)
+const { toggleReaction, getReactions } = useReactions(currentConversationId)
+const { markAsRead, getMessageStatus } = useReadReceipts(currentConversationId)
+const { resetUnreadCount } = useUnreadCounts()
+const { notifyNewMessage, requestPermission } = useNotifications()
+requestPermission()
+
+const {
+  searchQuery,
+  isSearchOpen,
+  searchResults,
+  currentResult,
+  currentResultIndex,
+  nextResult,
+  prevResult,
+  openSearch,
+  closeSearch,
+} = useMessageSearch(messages)
+
+// Mark messages as read and notify when they arrive
+watch(() => messages.value.length, (newLen, oldLen) => {
+  const lastMsg = messages.value[messages.value.length - 1]
+  if (lastMsg && lastMsg.senderId !== auth.currentUser?.uid) {
+    markAsRead(lastMsg.id, lastMsg.timestamp)
+    if (currentConversationId.value) {
+      resetUnreadCount(currentConversationId.value)
+    }
+    // Notify only for truly new messages (not initial load)
+    if (oldLen !== undefined && oldLen > 0 && props.selectedUser) {
+      notifyNewMessage(props.selectedUser.displayName, lastMsg.text)
+    }
+  }
+})
 
 const otherOnline = computed(() => {
   if (!props.selectedUser) return false
@@ -41,6 +83,12 @@ function handleTyping() {
 function handleSend(text: string) {
   setTyping(false)
   sendMessage(text)
+}
+
+async function handleFile(file: File) {
+  if (!currentConversationId.value) return
+  const result = await uploadFile(file, currentConversationId.value)
+  await sendFileMessage(result)
 }
 </script>
 
@@ -65,11 +113,25 @@ function handleSend(text: string) {
             :class="otherOnline ? 'bg-green-500' : 'bg-muted-foreground/40'"
           />
         </div>
-        <div>
+        <div class="flex-1">
           <p class="text-sm font-medium">{{ selectedUser.displayName }}</p>
           <p v-if="otherOnline" class="text-xs text-green-500">Online</p>
         </div>
+        <Button variant="ghost" size="icon" aria-label="Search messages" @click="openSearch">
+          <Search class="h-4 w-4" />
+        </Button>
       </div>
+
+      <!-- Search panel -->
+      <MessageSearch
+        v-if="isSearchOpen"
+        :result-count="searchResults.length"
+        :current-index="currentResultIndex"
+        @search="(q) => searchQuery = q"
+        @next="nextResult"
+        @prev="prevResult"
+        @close="closeSearch"
+      />
 
       <!-- Message chart -->
       <MessageChart :stats="hourlyStats" :total-messages="totalMessages" />
@@ -79,17 +141,32 @@ function handleSend(text: string) {
         :messages="messages"
         :current-uid="auth.currentUser?.uid ?? ''"
         :loading="loading"
+        :get-reactions="getReactions"
+        :get-message-status="getMessageStatus"
+        :highlighted-message-id="currentResult?.id"
+        :highlight-query="searchQuery.trim() || undefined"
+        @edit="editMessage"
+        @delete="deleteMessage"
+        @react="toggleReaction"
       />
 
       <!-- Typing indicator -->
-      <div v-if="isOtherUserTyping" class="px-4 py-1">
-        <p class="text-xs text-muted-foreground animate-pulse">
-          {{ selectedUser.displayName }} is typing...
-        </p>
-      </div>
+      <Transition name="fade">
+        <div v-if="isOtherUserTyping" class="px-4 py-1">
+          <p class="text-xs text-muted-foreground animate-pulse">
+            {{ selectedUser.displayName }} is typing...
+          </p>
+        </div>
+      </Transition>
 
       <!-- Input -->
-      <MessageInput @send="handleSend" @typing="handleTyping" />
+      <MessageInput
+        :uploading="uploading"
+        :upload-progress="uploadProgress"
+        @send="handleSend"
+        @typing="handleTyping"
+        @file="handleFile"
+      />
     </template>
   </div>
 </template>
