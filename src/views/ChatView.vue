@@ -85,7 +85,7 @@ async function handleLogout() {
       <!-- Sidebar footer -->
       <div class="flex items-center justify-between p-4">
         <p class="truncate text-sm text-sidebar-foreground">
-          {{ auth.currentUser?.email }}
+          {{ auth.currentUser?.displayName || auth.currentUser?.email }}
         </p>
         <Button variant="ghost" size="icon" aria-label="Sign out" @click="handleLogout">
           <LogOut class="h-4 w-4" />
