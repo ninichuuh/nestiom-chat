@@ -2,10 +2,25 @@ import { ref } from 'vue'
 
 const enabled = ref(localStorage.getItem('notifications') !== 'false')
 
-// Generate a short notification chime using Web Audio API
-function playChime() {
+// Generate a short notification chime using Web Audio API (lazy context creation)
+let audioCtxRef: AudioContext | null = null
+
+function getAudioContext(): AudioContext | null {
   try {
-    const ctx = new AudioContext()
+    if (!audioCtxRef || audioCtxRef.state === 'closed') {
+      audioCtxRef = new AudioContext()
+    }
+    return audioCtxRef
+  } catch {
+    return null
+  }
+}
+
+function playChime() {
+  const ctx = getAudioContext()
+  if (!ctx) return
+
+  try {
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
 
@@ -21,10 +36,8 @@ function playChime() {
 
     oscillator.start(ctx.currentTime)
     oscillator.stop(ctx.currentTime + 0.3)
-
-    oscillator.onended = () => ctx.close()
   } catch {
-    // Audio not available
+    // Audio playback failed
   }
 }
 
@@ -45,7 +58,7 @@ export function useNotifications() {
     if (document.visibilityState !== 'visible') {
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification(senderName, {
-          body: text.length > 100 ? text.slice(0, 97) + '...' : text,
+          body: text.length > 100 ? `${text.slice(0, 97)}...` : text,
           tag: 'nestiom-chat',
         })
       }

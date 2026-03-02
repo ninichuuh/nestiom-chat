@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useAuthStore } from '@/stores/auth'
@@ -23,6 +23,12 @@ const { listen: listenUnread, cleanup: cleanupUnread } = useUnreadCounts()
 // Initialize presence tracking and unread counts when chat view mounts
 setupPresence()
 listenUnread()
+
+// Clean up listeners when navigating away (not just on logout)
+onUnmounted(() => {
+  cleanupPresence()
+  cleanupUnread()
+})
 
 const selectedUser = ref<ChatUser | null>(null)
 const sidebarOpen = ref(false)
