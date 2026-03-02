@@ -10,6 +10,7 @@ import {
   query,
   orderByChild,
   serverTimestamp,
+  type Unsubscribe,
 } from 'firebase/database'
 import { db } from '@/firebase'
 import { useAuthStore } from '@/stores/auth'
@@ -57,8 +58,15 @@ export function useMessages(otherUid: Ref<string | null>) {
   const { incrementUnreadCount } = useUnreadCounts()
 
   let activeQueryRef: ReturnType<typeof query> | null = null
+  let childUnsubscribes: Unsubscribe[] = []
 
   function cleanup() {
+    // Clean up child listeners first
+    for (const unsub of childUnsubscribes) {
+      unsub()
+    }
+    childUnsubscribes = []
+
     if (activeQueryRef) {
       off(activeQueryRef)
       activeQueryRef = null
@@ -97,17 +105,21 @@ export function useMessages(otherUid: Ref<string | null>) {
       }
       loading.value = false
 
-      onChildAdded(messagesRef, (childSnapshot) => {
-        const msg = snapshotToMessage(childSnapshot.key!, childSnapshot.val())
-        if (!messages.value.some(m => m.id === msg.id)) {
-          messages.value = [...messages.value, msg]
-        }
-      })
-
-      onChildChanged(messagesRef, (childSnapshot) => {
-        const updated = snapshotToMessage(childSnapshot.key!, childSnapshot.val())
-        messages.value = messages.value.map(m => m.id === updated.id ? updated : m)
-      })
+      // Register child listeners and track their unsubscribe functions
+      childUnsubscribes.push(
+        onChildAdded(messagesRef, (childSnapshot) => {
+          if (!childSnapshot.key) return
+          const msg = snapshotToMessage(childSnapshot.key, childSnapshot.val())
+          if (!messages.value.some(m => m.id === msg.id)) {
+            messages.value = [...messages.value, msg]
+          }
+        }),
+        onChildChanged(messagesRef, (childSnapshot) => {
+          if (!childSnapshot.key) return
+          const updated = snapshotToMessage(childSnapshot.key, childSnapshot.val())
+          messages.value = messages.value.map(m => m.id === updated.id ? updated : m)
+        }),
+      )
     }, { onlyOnce: true })
   }, { immediate: true })
 

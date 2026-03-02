@@ -60,6 +60,13 @@ export function usePresence() {
 
   function cleanupPresence() {
     if (!presenceInitialized) return
+
+    // Set current user offline before detaching listeners
+    if (auth.currentUser) {
+      const userPresenceRef = dbRef(db, `presence/${auth.currentUser.uid}`)
+      set(userPresenceRef, { online: false, lastSeen: serverTimestamp() })
+    }
+
     const connectedRef = dbRef(db, '.info/connected')
     const allPresenceRef = dbRef(db, 'presence')
     off(connectedRef)
