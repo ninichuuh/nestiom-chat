@@ -56,6 +56,11 @@ const {
   closeSearch,
 } = useMessageSearch(messages)
 
+// Reset unread count when opening a conversation
+watch(currentConversationId, (id) => {
+  if (id) resetUnreadCount(id)
+})
+
 // Mark messages as read and notify when they arrive
 watch(() => messages.value.length, (newLen, oldLen) => {
   const lastMsg = messages.value[messages.value.length - 1]
