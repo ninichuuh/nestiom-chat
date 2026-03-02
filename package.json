@@ -1,6 +1,7 @@
 {
   "name": "nestiom-chat",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Real-time private chat application built with Vue 3 and Firebase",
   "private": true,
   "type": "module",
   "scripts": {

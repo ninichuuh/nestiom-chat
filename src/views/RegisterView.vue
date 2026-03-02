@@ -14,7 +14,8 @@ const displayName = ref('')
 const password = ref('')
 
 async function handleSubmit() {
-  await register(email.value, displayName.value, password.value)
+  if (!displayName.value.trim()) return
+  await register(email.value, displayName.value.trim(), password.value)
   if (!error.value) {
     router.push('/chat')
   }
