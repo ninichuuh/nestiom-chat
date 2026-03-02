@@ -77,7 +77,7 @@ function handleSend(text: string) {
       <!-- Messages -->
       <MessageList
         :messages="messages"
-        :current-uid="auth.currentUser!.uid"
+        :current-uid="auth.currentUser?.uid ?? ''"
         :loading="loading"
       />
 

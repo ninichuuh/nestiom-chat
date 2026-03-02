@@ -1,4 +1,4 @@
-import { ref, watch, type Ref } from 'vue'
+import { ref, watch, onUnmounted, type Ref } from 'vue'
 import {
   ref as dbRef,
   push,
@@ -28,13 +28,12 @@ export function useMessages(otherUid: Ref<string | null>) {
   const loading = ref(false)
   const auth = useAuthStore()
 
-  let currentConversationId: string | null = null
+  let activeQueryRef: ReturnType<typeof query> | null = null
 
   function cleanup() {
-    if (currentConversationId) {
-      const messagesRef = dbRef(db, `messages/${currentConversationId}`)
-      off(messagesRef)
-      currentConversationId = null
+    if (activeQueryRef) {
+      off(activeQueryRef)
+      activeQueryRef = null
     }
     messages.value = []
   }
@@ -49,19 +48,17 @@ export function useMessages(otherUid: Ref<string | null>) {
 
     loading.value = true
     const conversationId = getConversationId(auth.currentUser.uid, newUid)
-    currentConversationId = conversationId
 
     const messagesRef = query(
       dbRef(db, `messages/${conversationId}`),
       orderByChild('timestamp')
     )
+    activeQueryRef = messagesRef
 
-    // Use onValue for initial load (fires once with all data), then switch to onChildAdded
     let initialLoadDone = false
 
-    // Initial snapshot — loads all existing messages at once
     onValue(messagesRef, (snapshot) => {
-      if (initialLoadDone) return // Only use this for the first load
+      if (initialLoadDone) return
       initialLoadDone = true
 
       const data = snapshot.val()
@@ -75,7 +72,6 @@ export function useMessages(otherUid: Ref<string | null>) {
       }
       loading.value = false
 
-      // Now attach onChildAdded for real-time new messages only
       onChildAdded(messagesRef, (childSnapshot) => {
         const childData = childSnapshot.val()
         const msg: Message = {
@@ -84,7 +80,6 @@ export function useMessages(otherUid: Ref<string | null>) {
           text: childData.text,
           timestamp: childData.timestamp,
         }
-        // Only add if not already in the list (initial load already has these)
         if (!messages.value.some(m => m.id === msg.id)) {
           messages.value = [...messages.value, msg]
         }
@@ -92,13 +87,12 @@ export function useMessages(otherUid: Ref<string | null>) {
     }, { onlyOnce: true })
   }, { immediate: true })
 
+  onUnmounted(() => cleanup())
+
   async function sendMessage(text: string) {
     if (!otherUid.value || !auth.currentUser) return
 
     const conversationId = getConversationId(auth.currentUser.uid, otherUid.value)
-
-    // Privacy guard: ensure current user is part of this conversation
-    if (!conversationId.includes(auth.currentUser.uid)) return
     const messagesRef = dbRef(db, `messages/${conversationId}`)
     await push(messagesRef, {
       senderId: auth.currentUser.uid,

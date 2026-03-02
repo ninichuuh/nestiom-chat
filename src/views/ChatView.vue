@@ -47,6 +47,7 @@ async function handleLogout() {
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside
+      aria-label="User list"
       class="flex w-full flex-col border-r bg-sidebar-background md:w-80"
       :class="{ 'hidden md:flex': !showSidebar }"
     >
@@ -69,7 +70,7 @@ async function handleLogout() {
         <p class="truncate text-sm text-sidebar-foreground">
           {{ auth.currentUser?.email }}
         </p>
-        <Button variant="ghost" size="icon" @click="handleLogout" title="Sign out">
+        <Button variant="ghost" size="icon" aria-label="Sign out" @click="handleLogout">
           <LogOut class="h-4 w-4" />
         </Button>
       </div>
@@ -78,11 +79,11 @@ async function handleLogout() {
     <!-- Chat panel -->
     <main
       class="hidden flex-1 flex-col md:flex"
-      :class="{ 'flex !flex': selectedUser && !sidebarOpen }"
+      :class="{ '!flex': selectedUser && !sidebarOpen }"
     >
       <!-- Mobile back button -->
       <div v-if="selectedUser" class="flex items-center gap-2 border-b px-2 py-2 md:hidden">
-        <Button variant="ghost" size="icon" @click="handleBack">
+        <Button variant="ghost" size="icon" aria-label="Back to user list" @click="handleBack">
           <ArrowLeft class="h-4 w-4" />
         </Button>
         <span class="text-sm font-medium">Back</span>

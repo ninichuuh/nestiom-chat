@@ -21,7 +21,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-muted/40 px-4">
+  <main class="flex min-h-screen items-center justify-center bg-muted/40 px-4">
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl text-center">Sign In</CardTitle>
@@ -50,7 +50,7 @@ async function handleSubmit() {
               autocomplete="current-password"
             />
           </div>
-          <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
+          <p v-if="error" role="alert" class="text-sm text-destructive">{{ error }}</p>
           <Button type="submit" class="w-full" :disabled="loading">
             {{ loading ? 'Signing in...' : 'Sign In' }}
           </Button>
@@ -63,5 +63,5 @@ async function handleSubmit() {
         </form>
       </CardContent>
     </Card>
-  </div>
+  </main>
 </template>

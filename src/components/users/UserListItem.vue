@@ -41,6 +41,7 @@ const lastSeenText = computed(() => {
     <div class="relative">
       <Avatar :name="user.displayName" size="default" />
       <span
+        :aria-label="online ? 'Online' : 'Offline'"
         class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background"
         :class="online ? 'bg-green-500' : 'bg-muted-foreground/40'"
       />

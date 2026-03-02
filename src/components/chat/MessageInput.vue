@@ -45,7 +45,7 @@ function handleInput() {
       @keydown.enter.prevent="handleSend"
       @input="handleInput"
     />
-    <Button size="icon" @click="handleSend" :disabled="!text.trim()">
+    <Button size="icon" aria-label="Send message" @click="handleSend" :disabled="!text.trim()">
       <SendHorizonal class="h-4 w-4" />
     </Button>
   </div>
