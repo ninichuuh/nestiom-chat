@@ -3,10 +3,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
   onAuthStateChanged,
   type User,
 } from 'firebase/auth'
-import { ref as dbRef, set, serverTimestamp } from 'firebase/database'
+import { ref as dbRef, get, set, serverTimestamp } from 'firebase/database'
 import { auth, db } from '@/firebase'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
@@ -22,6 +23,7 @@ export function useAuth() {
     loading.value = true
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      await updateProfile(user, { displayName })
       await set(dbRef(db, `users/${user.uid}`), {
         displayName,
         createdAt: serverTimestamp(),
@@ -69,9 +71,21 @@ export function useAuth() {
 
     const store = useAuthStore()
     let initialLoad = true
-    onAuthStateChanged(auth, (user: User | null) => {
+    onAuthStateChanged(auth, async (user: User | null) => {
       store.setUser(user)
       store.setLoading(false)
+
+      // Ensure user profile exists in the DB (self-healing for failed registrations)
+      if (user) {
+        const profileRef = dbRef(db, `users/${user.uid}`)
+        const snapshot = await get(profileRef)
+        if (!snapshot.exists()) {
+          await set(profileRef, {
+            displayName: user.displayName || user.email?.split('@')[0] || 'User',
+            createdAt: serverTimestamp(),
+          })
+        }
+      }
 
       // Redirect to login if session expires after initial load
       if (!initialLoad && !user) {
